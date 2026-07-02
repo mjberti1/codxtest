@@ -1,6 +1,6 @@
 # Codec Loop Test
 
-A small static Netlify site for checking video codec compatibility across devices. The page embeds two muted autoplaying videos that loop continuously: one MP4/H.264 source and one WebM/VP8 source.
+A small static Netlify site for checking video codec compatibility across devices. The page embeds two muted autoplaying videos that loop continuously: one HEVC source and one AV1 source.
 
 ## Key Technologies
 
