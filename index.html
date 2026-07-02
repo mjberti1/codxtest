@@ -80,47 +80,42 @@
           </div>
         </article>
         
-
-      <article class="test-card" data-video-card>
-  <div class="card-head">
-    <div>
-      <p class="label">Test C</p>
-      <h2>AV1-HEVC-FALLBACK STATIC IMG</h2>
-    </div>
-    <span class="status" data-status>Checking</span>
-  </div>
-  
-  <!-- CORRETTO: Il tag video non si autochiude più -->
-  <video
-    data-codec-video
-    class="video-frame"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="auto"
-    poster="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_STATIC.jpg"
-  >
-    <source
-      src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.av1.mp4"
-      type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"
-    />
-    <source
-      src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.hevc.mp4"
-      type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"
-    />
-    <!-- Fallback nativo se nessun codec è supportato -->
-    <img src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_STATIC.jpg" alt="FISO" />
-  </video>
-
-  <div class="details">
-    <span>Container: MP4</span>
-    <span>Muted autoplay</span>
-    <span>Loop enabled</span>
-  </div>
-</article>
-
-    </section>
+        <article class="test-card" data-video-card>
+          <div class="card-head">
+            <div>
+              <p class="label">Test C</p>
+              <h2>AV1-HEVC-FALLBACK STATIC IMG</h2>
+            </div>
+            <span class="status" data-status>Checking</span>
+          </div>
+          <!-- CORREZIONE: Rimosse le chiusure spurie e anticipate "/>" dal tag video -->
+          <video
+            data-codec-video
+            class="video-frame"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+            poster="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_STATIC.jpg"
+          >
+            <source
+              src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.av1.mp4"
+              type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"
+            />
+            <source
+              src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.hevc.mp4"
+              type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"
+            />
+            <img src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_STATIC.jpg" alt="FISO"/>
+          </video>
+          <div class="details">
+            <span>Container: MP4</span>
+            <span>Muted autoplay</span>
+            <span>Loop enabled</span>
+          </div>
+        </article>
+      </section>
 
       <section class="notes" aria-label="Testing notes">
         <h2>What to watch</h2>
