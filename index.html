@@ -11,63 +11,37 @@
       <header class="intro" aria-labelledby="page-title">
         <p class="kicker">Device video compatibility check</p>
         <h1 id="page-title">Three looping autoplay codec probes</h1>
-        <p class="summary">
-          Load this page on any target device and compare whether each embedded video starts, loops,
-          and stays smooth. Autoplay is muted and inline to match mobile browser requirements.
-        </p>
       </header>
 
       <section class="tests" aria-label="Codec test videos">
-        <!-- TEST A & B: Gestiti dallo script esterno -->
-        <article class="test-card" data-video-card>
-          <div class="card-head"><div><p class="label">Test A</p><h2>MP4 / AV1</h2></div><span class="status" data-status>Checking</span></div>
-          <video data-codec-video class="video-frame" autoplay muted loop playsinline preload="auto">
-            <source src="https://github.io" type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"/>
-          </video>
-        </article>
-
-        <article class="test-card accent" data-video-card>
-          <div class="card-head"><div><p class="label">Test B</p><h2>MP4 / HEVC</h2></div><span class="status" data-status>Checking</span></div>
-          <video data-codec-video class="video-frame" autoplay muted loop playsinline preload="auto">
-            <source src="https://github.io" type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"/>
-          </video>
-        </article>
-
-        <!-- TEST C: Isolato e protetto -->
-        <article class="test-card" id="test-c">
-          <div class="card-head"><div><p class="label">Test C</p><h2>AV1-HEVC Fallback</h2></div><span class="status" id="status-c">Checking</span></div>
+        <!-- TEST A, B e C strutturati con data-video-card, data-codec-video e src adeguati -->
+        <!-- Il Test C utilizza id="test-c" e container-c per il fallback -->
+        <article class="test-card" data-video-card id="test-c">
+          <div class="card-head">
+            <div>
+              <p class="label">Test C</p>
+              <h2>AV1-HEVC Fallback</h2>
+            </div>
+            <span class="status" data-status>Checking</span>
+          </div>
           <div class="video-container" id="container-c">
-            <!-- NOTA: Niente data-codec-video qui -->
-            <video id="video-c" class="video-frame" autoplay muted loop playsinline preload="auto">
-              <source src="https://github.io" type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"/>
-              <source src="https://github.io" type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"/>
+            <video 
+              data-codec-video
+              id="video-c" 
+              class="video-frame" 
+              autoplay 
+              muted 
+              loop 
+              playsinline
+              preload="auto"
+            >
+              <source src="...av1.mp4" type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"/>
+              <source src="...hevc.mp4" type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"/>
             </video>
           </div>
         </article>
       </section>
     </main>
-
-    <!-- Script esterno -->
     <script src="https://github.io"></script>
-    
-    <!-- Logica Isolata Test C -->
-    <script>
-      (function() {
-        window.addEventListener('DOMContentLoaded', () => {
-          const video = document.getElementById('video-c'), container = document.getElementById('container-c'), status = document.getElementById('status-c');
-          if (!video || !container) return;
-          const fallbackImg = new Image();
-          fallbackImg.src = 'https://github.io';
-          fallbackImg.className = 'video-frame';
-          
-          function showFallback(msg) {
-            if (video.parentNode) { container.replaceChild(fallbackImg, video); status.textContent = "Static (" + msg + ")"; }
-          }
-          video.addEventListener('playing', () => status.textContent = 'Playing');
-          video.addEventListener('error', () => showFallback('Error'), true);
-          video.play().catch(() => showFallback('Blocked'));
-        });
-      })();
-    </script>
   </body>
 </html>
