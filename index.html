@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codec Loop Test</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="intro" aria-labelledby="page-title">
+        <p class="kicker">Device video compatibility check</p>
+        <h1 id="page-title">Two looping autoplay codec probes</h1>
+        <p class="summary">
+          Load this page on any target device and compare whether each embedded video starts, loops,
+          and stays smooth. Autoplay is muted and inline to match mobile browser requirements.
+        </p>
+      </header>
+
+      <section class="tests" aria-label="Codec test videos">
+        <article class="test-card" data-video-card>
+          <div class="card-head">
+            <div>
+              <p class="label">Test A</p>
+              <h2>MP4 / AV1</h2>
+            </div>
+            <span class="status" data-status>Checking</span>
+          </div>
+          <video
+            data-codec-video
+            class="video-frame"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'%3E%3Crect width='1280' height='720' fill='%23191f24'/%3E%3Ctext x='640' y='370' text-anchor='middle' fill='%23f1efe5' font-family='Arial' font-size='54'%3EMP4 / AV1%3C/text%3E%3C/svg%3E"
+          >
+            <source
+              src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/av1/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+              type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"
+            />
+            MP4 / AV1 playback is not supported on this device.
+          </video>
+          <div class="details">
+            <span>Container: MP4</span>
+            <span>Muted autoplay</span>
+            <span>Loop enabled</span>
+          </div>
+        </article>
+
+        <article class="test-card accent" data-video-card>
+          <div class="card-head">
+            <div>
+              <p class="label">Test B</p>
+              <h2>MP4 / HEVC</h2>
+            </div>
+            <span class="status" data-status>Checking</span>
+          </div>
+          <video
+            data-codec-video
+            class="video-frame"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'%3E%3Crect width='1280' height='720' fill='%23191f24'/%3E%3Ctext x='640' y='370' text-anchor='middle' fill='%23f1efe5' font-family='Arial' font-size='54'%3EMP4 / HEVC%3C/text%3E%3C/svg%3E"
+          >
+            <source
+              src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h265/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+              type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"
+            />
+            MP4 / HEVC playback is not supported on this device.
+          </video>
+          <div class="details">
+            <span>Container: MP4</span>
+            <span>Muted autoplay</span>
+            <span>Loop enabled</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="notes" aria-label="Testing notes">
+        <h2>What to watch</h2>
+        <p>
+          A passing test shows moving video, reports "Playing," and restarts cleanly at the end of
+          the clip. A failed test may show an error, remain paused, or display the poster only.
+        </p>
+      </section>
+    </main>
+
+    <script src="/script.js"></script>
+  </body>
+</html>
