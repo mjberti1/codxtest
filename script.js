@@ -1,64 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const videoCards = document.querySelectorAll('[data-video-card]');
+  const videos = document.querySelectorAll('video[data-codec-video]');
 
-  videoCards.forEach(card => {
-    const video = card.querySelector('[data-codec-video]');
-    const statusLabel = card.querySelector('[data-status]');
-    
-    if (!video || !statusLabel) return;
+  videos.forEach(video => {
+    const card = video.closest('[data-video-card]');
+    const status = card ? card.querySelector('[data-status]') : null;
 
-    const setStatus = (text) => {
-      statusLabel.textContent = text;
-    };
+    if (!status) return;
 
-    // REGOLA 1: Se il video riesce a riprodurre (qualunque sia il codec), è un successo.
+    // Se il video è già in riproduzione
     video.addEventListener('playing', () => {
-      setStatus('Playing');
+      status.textContent = 'Playing';
+      status.style.color = '#4caf50'; // Verde
     });
 
-    // REGOLA 2: Gestione dei canali di errore per sorgenti multiple (Test C)
-    const sources = video.querySelectorAll('source');
-    
-    if (sources.length > 0) {
-      let failedSources = 0;
-      
-      sources.forEach(source => {
-        source.addEventListener('error', () => {
-          failedSources++;
-          // Il fallback si attiva SOLO se TUTTI i tag <source> hanno fallito
-          if (failedSources === sources.length) {
-            setStatus('Fallback (Image)');
-          }
-        });
-      });
-    } else {
-      // REGOLA 3: Gestione errore diretto per sorgente singola (Test A e Test B)
-      video.addEventListener('error', () => {
-        setStatus('Not Supported');
-      });
-    }
+    // Se la riproduzione fallisce o non è supportata
+    video.addEventListener('error', () => {
+      status.textContent = 'Failed';
+      status.style.color = '#f44336'; // Rosso
+    });
 
-    // REGOLA 4: Controllo di sicurezza asincrono (Timeout per stalli del browser)
-    // Risolve i casi in cui i browser mobili non supportano il codec ma congelano la UI senza lanciare eventi.
-    setTimeout(() => {
-      if (statusLabel.textContent === 'Checking') {
-        if (video.paused) {
-          if (sources.length > 0 && video.readyState === 0) {
-            setStatus('Fallback (Image)');
-          } else {
-            setStatus('Not Supported');
-          }
-        } else {
-          setStatus('Playing');
-        }
-      }
-    }, 2000);
-
-    // Forza l'avvio programmatico mitigando i blocchi di autoplay sui browser
+    // Controllo di sicurezza per browser che bloccano l'autoplay silenzioso
     video.play().catch(() => {
-      if (statusLabel.textContent === 'Checking' && video.readyState > 1) {
-        setStatus('Click to Play');
-      }
+      status.textContent = 'Paused / Blocked';
     });
   });
 });
