@@ -10,7 +10,7 @@
     <main class="shell">
       <header class="intro" aria-labelledby="page-title">
         <p class="kicker">Device video compatibility check</p>
-        <h1 id="page-title">Two looping autoplay codec probes</h1>
+        <h1 id="page-title">Three looping autoplay codec probes</h1>
         <p class="summary">
           Load this page on any target device and compare whether each embedded video starts, loops,
           and stays smooth. Autoplay is muted and inline to match mobile browser requirements.
@@ -18,6 +18,7 @@
       </header>
 
       <section class="tests" aria-label="Codec test videos">
+        <!-- TEST A -->
         <article class="test-card" data-video-card>
           <div class="card-head">
             <div>
@@ -49,6 +50,7 @@
           </div>
         </article>
 
+        <!-- TEST B -->
         <article class="test-card accent" data-video-card>
           <div class="card-head">
             <div>
@@ -79,73 +81,42 @@
             <span>Loop enabled</span>
           </div>
         </article>
-        
 
-  <!-- Sezione Test C Modificata -->
-<section id="test-c">
-  <h2>Test C: AV1-HEVC-FALLBACK STATIC IMG</h2>
-  <div class="video-container" id="container-c">
-    <!-- Assegna un ID al video per poterlo tracciare -->
-    <video id="video-c" muted autoplay loop playsinline>
-      <source src="percorso-del-tuo-video.mp4" type="video/mp4; codecs='avc1.xxxx, av1.xxxx'">
-      <!-- La vecchia immagine inserita qui viene ignorata dai browser moderni -->
-    </video>
-  </div>
-</section>
-
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    const video = document.getElementById('video-c');
-    const container = document.getElementById('container-c');
-    
-    // Configura l'immagine di fallback (inserisci il percorso corretto della tua immagine)
-    const fallbackImg = document.createElement('img');
-    fallbackImg.src = 'immagine-fallback.jpg'; 
-    fallbackImg.alt = 'FISO - Fallback Static Image';
-    fallbackImg.style.width = '100%'; // Adatta lo stile al tuo layout
-    
-    // Se il browser dichiara esplicitamente di non poter riprodurre il formato
-    if (video.canPlayType && video.canPlayType("video/mp4; codecs='av1'").isTypeSupported === false) {
-      container.replaceChild(fallbackImg, video);
-    } else {
-      // Se fallisce il caricamento del video durante l'esecuzione
-      video.addEventListener('error', () => {
-        container.replaceChild(fallbackImg, video);
-      }, true);
-    }
-  });
-</script>
-  
-  <!-- TAG CORRETTO: Nessuna autochiusura "/>" prima del tempo -->
-  <video
-    data-codec-video
-    class="video-frame"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="auto"
-    poster="https://github.io"
-  >
-    <source
-      src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.av1.mp4"
-              type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"
-    />
-    <source
-       src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.hevc.mp4"
-              type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"
-    />
-    <!-- Immagine di fallback visibile solo se i video sopra falliscono -->
-    <img src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_STATIC.jpg" alt="FISO"/>
-  </video>
-
-  <div class="details">
-    <span>Container: MP4</span>
-    <span>Muted autoplay</span>
-    <span>Loop enabled</span>
-  </div>
-</article>
-
+        <!-- TEST C -->
+        <article class="test-card" data-video-card id="test-c">
+          <div class="card-head">
+            <div>
+              <p class="label">Test C</p>
+              <h2>AV1-HEVC Fallback</h2>
+            </div>
+            <span class="status" data-status>Checking</span>
+          </div>
+          <div class="video-container" id="container-c">
+            <video 
+              id="video-c" 
+              class="video-frame" 
+              autoplay 
+              muted 
+              loop 
+              playsinline
+              preload="auto"
+            >
+              <source 
+                src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.av1.mp4" 
+                type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"
+              />
+              <source 
+                src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.hevc.mp4" 
+                type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"
+              />
+            </video>
+          </div>
+          <div class="details">
+            <span>Container: MP4</span>
+            <span>Muted autoplay</span>
+            <span>Loop enabled</span>
+          </div>
+        </article>
       </section>
 
       <section class="notes" aria-label="Testing notes">
@@ -159,5 +130,37 @@
     </main>
 
     <script src="https://mjberti1.github.io/codxtest/script.js"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('video-c');
+        const container = document.getElementById('container-c');
+        const statusElement = document.querySelector('#test-c [data-status]');
+        
+        const fallbackImg = document.createElement('img');
+        fallbackImg.src = 'https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_STATIC.jpg'; 
+        fallbackImg.alt = 'FISO - Fallback Static Image';
+        fallbackImg.className = 'video-frame'; 
+        
+        function switchToFallback(reason) {
+          if (video.parentNode) {
+            container.replaceChild(fallbackImg, video);
+            if (statusElement) statusElement.textContent = "Fallback Image (" + reason + ")";
+          }
+        }
+
+        // Controllo nativo canPlayType corretto
+        const canPlayAV1 = video.canPlayType('video/mp4; codecs="av01.0.05M.08"');
+        const canPlayHEVC = video.canPlayType('video/mp4; codecs="hev1.1.6.L93.B0"');
+
+        if (canPlayAV1 === '' && canPlayHEVC === '') {
+          switchToFallback('Not Supported');
+        } else {
+          // Fallback se l'evento di errore scatta sulle sorgenti video
+          video.addEventListener('error', () => {
+            switchToFallback('Playback Error');
+          }, true);
+        }
+      });
+    </script>
   </body>
 </html>
