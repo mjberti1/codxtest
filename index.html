@@ -81,14 +81,40 @@
         </article>
         
 
-   <article class="test-card" data-video-card>
-  <div class="card-head">
-    <div>
-      <p class="label">Test C</p>
-      <h2>AV1-HEVC-FALLBACK STATIC IMG</h2>
-    </div>
-    <span class="status" data-status>Checking</span>
+  <!-- Sezione Test C Modificata -->
+<section id="test-c">
+  <h2>Test C: AV1-HEVC-FALLBACK STATIC IMG</h2>
+  <div class="video-container" id="container-c">
+    <!-- Assegna un ID al video per poterlo tracciare -->
+    <video id="video-c" muted autoplay loop playsinline>
+      <source src="percorso-del-tuo-video.mp4" type="video/mp4; codecs='avc1.xxxx, av1.xxxx'">
+      <!-- La vecchia immagine inserita qui viene ignorata dai browser moderni -->
+    </video>
   </div>
+</section>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const video = document.getElementById('video-c');
+    const container = document.getElementById('container-c');
+    
+    // Configura l'immagine di fallback (inserisci il percorso corretto della tua immagine)
+    const fallbackImg = document.createElement('img');
+    fallbackImg.src = 'immagine-fallback.jpg'; 
+    fallbackImg.alt = 'FISO - Fallback Static Image';
+    fallbackImg.style.width = '100%'; // Adatta lo stile al tuo layout
+    
+    // Se il browser dichiara esplicitamente di non poter riprodurre il formato
+    if (video.canPlayType && video.canPlayType("video/mp4; codecs='av1'").isTypeSupported === false) {
+      container.replaceChild(fallbackImg, video);
+    } else {
+      // Se fallisce il caricamento del video durante l'esecuzione
+      video.addEventListener('error', () => {
+        container.replaceChild(fallbackImg, video);
+      }, true);
+    }
+  });
+</script>
   
   <!-- TAG CORRETTO: Nessuna autochiusura "/>" prima del tempo -->
   <video
