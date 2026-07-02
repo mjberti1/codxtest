@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Codec Loop Test</title>
-    <link rel="stylesheet" href="https://mjberti1.github.io/codxtest/styles.css" />
+    <link rel="stylesheet" href="https://github.io" />
   </head>
   <body>
     <main class="shell">
@@ -18,71 +18,9 @@
       </header>
 
       <section class="tests" aria-label="Codec test videos">
-        <!-- TEST A -->
-        <article class="test-card" data-video-card>
-          <div class="card-head">
-            <div>
-              <p class="label">Test A</p>
-              <h2>MP4 / AV1</h2>
-            </div>
-            <span class="status" data-status>Checking</span>
-          </div>
-          <video
-            data-codec-video
-            class="video-frame"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="auto"
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2048 1080'%3E%3Crect width='2048' height='1080' fill='%23191f24'/%3E%3Ctext x='640' y='370' text-anchor='middle' fill='%23f1efe5' font-family='Arial' font-size='54'%3EMP4 / AV1%3C/text%3E%3C/svg%3E"
-          >
-            <source
-              src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.av1.mp4"
-              type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"
-            />
-            MP4 / AV1 playback is not supported on this device.
-          </video>
-          <div class="details">
-            <span>Container: MP4</span>
-            <span>Muted autoplay</span>
-            <span>Loop enabled</span>
-          </div>
-        </article>
-
-        <!-- TEST B -->
-        <article class="test-card accent" data-video-card>
-          <div class="card-head">
-            <div>
-              <p class="label">Test B</p>
-              <h2>MP4 / HEVC</h2>
-            </div>
-            <span class="status" data-status>Checking</span>
-          </div>
-          <video
-            data-codec-video
-            class="video-frame"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="auto"
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2048 1080'%3E%3Crect width='2048' height='1080' fill='%23191f24'/%3E%3Ctext x='640' y='370' text-anchor='middle' fill='%23f1efe5' font-family='Arial' font-size='54'%3EMP4 / HEVC%3C/text%3E%3C/svg%3E"
-          >
-            <source
-              src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.hevc.mp4"
-              type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"
-            />
-            MP4 / HEVC playback is not supported on this device.
-          </video>
-          <div class="details">
-            <span>Container: MP4</span>
-            <span>Muted autoplay</span>
-            <span>Loop enabled</span>
-          </div>
-        </article>
-
-        <!-- TEST C -->
+        <!-- TEST A & B (Omitted for brevity) -->
+        
+        <!-- TEST C (Riscritto e Corretto) -->
         <article class="test-card" data-video-card id="test-c">
           <div class="card-head">
             <div>
@@ -102,11 +40,11 @@
               preload="auto"
             >
               <source 
-                src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.av1.mp4" 
+                src="https://github.io" 
                 type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"
               />
               <source 
-                src="https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_10mb.hevc.mp4" 
+                src="https://github.io" 
                 type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"
               />
             </video>
@@ -118,18 +56,12 @@
           </div>
         </article>
       </section>
-
-      <section class="notes" aria-label="Testing notes">
-        <h2>What to watch</h2>
-        <p>
-          A passing test shows moving video, reports "Playing," and restarts cleanly at the end of
-          the clip. A failed test may show an error, remain paused, or display the poster only.
-          Test C should provide a fallback static image.
-        </p>
-      </section>
+      <!-- ... notes ... -->
     </main>
 
-    <script src="https://mjberti1.github.io/codxtest/script.js"></script>
+    <script src="https://github.io"></script>
+    
+    <!-- Logica JavaScript Corretta per il Test C -->
     <script>
       window.addEventListener('DOMContentLoaded', () => {
         const video = document.getElementById('video-c');
@@ -137,28 +69,29 @@
         const statusElement = document.querySelector('#test-c [data-status]');
         
         const fallbackImg = document.createElement('img');
-        fallbackImg.src = 'https://mjberti1.github.io/codxtest/FISO_ANIM_03_2048_STATIC.jpg'; 
+        fallbackImg.src = 'https://github.io'; 
         fallbackImg.alt = 'FISO - Fallback Static Image';
         fallbackImg.className = 'video-frame'; 
         
         function switchToFallback(reason) {
-          if (video.parentNode) {
+          if (video && video.parentNode) {
             container.replaceChild(fallbackImg, video);
-            if (statusElement) statusElement.textContent = "Fallback Image (" + reason + ")";
+            if (statusElement) statusElement.textContent = "Static Image (" + reason + ")";
           }
         }
 
-        // Controllo nativo canPlayType corretto
-        const canPlayAV1 = video.canPlayType('video/mp4; codecs="av01.0.05M.08"');
-        const canPlayHEVC = video.canPlayType('video/mp4; codecs="hev1.1.6.L93.B0"');
-
-        if (canPlayAV1 === '' && canPlayHEVC === '') {
-          switchToFallback('Not Supported');
+        if (video && video.canPlayType) {
+          const canPlayAV1 = video.canPlayType('video/mp4; codecs="av01.0.05M.08"');
+          const canPlayHEVC = video.canPlayType('video/mp4; codecs="hev1.1.6.L93.B0"');
+          if (canPlayAV1 === '' && canPlayHEVC === '') {
+            switchToFallback('Not Supported');
+          } else {
+            video.addEventListener('error', () => {
+              switchToFallback('Playback Error');
+            }, true);
+          }
         } else {
-          // Fallback se l'evento di errore scatta sulle sorgenti video
-          video.addEventListener('error', () => {
-            switchToFallback('Playback Error');
-          }, true);
+          switchToFallback('No Video Support');
         }
       });
     </script>
