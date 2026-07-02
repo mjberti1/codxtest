@@ -1,76 +1,81 @@
+/**
+ * Codec Loop Test - JavaScript Controller
+ * Gestisce in modo resiliente i test di riproduzione video A, B e C.
+ */
 document.addEventListener('DOMContentLoaded', () => {
+  // Seleziona tutte le schede di test nella pagina
   const videoCards = document.querySelectorAll('[data-video-card]');
 
   videoCards.forEach(card => {
     const video = card.querySelector('[data-codec-video]');
     const statusLabel = card.querySelector('[data-status]');
     
+    // Sicurezza: se la scheda non contiene gli elementi necessari, salta
     if (!video || !statusLabel) return;
 
-    // Definisce le funzioni di aggiornamento dello stato della UI
-    const setStatus = (text, className) => {
+    // Funzione helper per aggiornare il testo e le classi CSS dello stato
+    const updateStatus = (text, stateClass) => {
       statusLabel.textContent = text;
-      // Rimuove eventuali classi di stato precedenti se usate nel CSS
+      // Mantiene la classe base 'status' e ne aggiunge una specifica per lo stile CSS
       statusLabel.className = 'status'; 
-      if (className) statusLabel.classList.add(className);
+      if (stateClass) {
+        statusLabel.classList.add(stateClass);
+      }
     };
 
-    // 1. Il video si avvia correttamente
+    // 1. EVENTO DI SUCCESSO: Il video è partito (vale per qualsiasi sorgente valida)
     video.addEventListener('playing', () => {
-      setStatus('Playing', 'status-playing');
+      updateStatus('Playing', 'status-playing');
     });
 
-    // 2. Il video viene messo in pausa o si ferma
-    video.addEventListener('pause', () => {
-      // Se è in loop, la pausa improvvisa di solito indica un problema o un blocco
-      setStatus('Paused', 'status-paused');
-    });
-
-    // 3. Gestione degli errori nativi (es. file non trovato o corrotto)
-    video.addEventListener('error', () => {
-      setStatus('Error', 'status-error');
-    });
-
-    // 4. GESTIONE RESILIENTE PER IL TEST C (Fallimento di tutti i <source>)
-    // Se nessuna delle sorgenti interne è supportata, l'errore scatta sui singoli elementi <source>
+    // 2. GESTIONE DEI SORGENTI MULTIPLI (Specifica per il Test C)
     const sources = video.querySelectorAll('source');
+    
     if (sources.length > 0) {
       let failedSourcesCount = 0;
       
+      // Monitora l'errore su OGNI singolo tag <source>
       sources.forEach(source => {
         source.addEventListener('error', () => {
           failedSourcesCount++;
-          // Se TUTTI i sorgenti falliscono, il browser mostrerà l'immagine di fallback
+          
+          // Il Fallback statico scatta SOLO se TUTTI i <source> interni falliscono
           if (failedSourcesCount === sources.length) {
-            setStatus('Fallback (Image)', 'status-fallback');
+            updateStatus('Fallback (Image)', 'status-fallback');
           }
         });
       });
+    } else {
+      // 3. GESTIONE ERRORE DIRETTO (Per Test A e Test B senza tag <source> multipli)
+      video.addEventListener('error', () => {
+        updateStatus('Not Supported', 'status-failed');
+      });
     }
 
-    // 5. CONTROLLO DI SICUREZZA (Timeout per riproduzione bloccata)
-    // Molti browser mobili non supportano un codec ma non generano un errore, 
-    // rimangono semplicemente congelati sul poster.
+    // 4. TIMEOUT DI SICUREZZA (Bypass per i browser che si bloccano senza emettere errori)
+    // Alcuni motori di rendering mobili non supportano il codec ma congelano il video sul poster 
+    // senza mai attivare l'evento 'error'.
     setTimeout(() => {
-      // Se dopo 2.5 secondi lo stato è ancora "Checking" e il video non è partito
-      if (video.paused && statusLabel.textContent === 'Checking') {
-        // Se il Test C ha dei source e sono falliti, lo stato è già gestito sopra.
-        // Altrimenti, forziamo lo stato di non supportato.
-        if (sources.length === 0) {
-          setStatus('Not Supported', 'status-failed');
-        } else if (video.readyState === 0) {
-          // readyState 0 significa che non è stato caricato nessun dato utile
-          setStatus('Fallback (Image)', 'status-fallback');
+      if (statusLabel.textContent === 'Checking') {
+        if (video.paused) {
+          if (sources.length > 0 && video.readyState === 0) {
+            // Se ha sorgenti ma non ha caricato metadati (readyState 0), è scattato il fallback
+            updateStatus('Fallback (Image)', 'status-fallback');
+          } else {
+            // Altrimenti il codec singolo non è supportato
+            updateStatus('Not Supported', 'status-failed');
+          }
         }
       }
-    }, 2500);
+    }, 3000); // 3 secondi di tolleranza per i dispositivi più lenti
 
-    // Forza l'avvio programmatico per bypassare alcune restrizioni aggressive dei browser
-    video.play().catch(err => {
-      console.log(`Autoplay impedito o non supportato per questa scheda:`, err);
-      // Se l'autoplay fallisce per policy del browser, aggiorna lo stato
-      if (statusLabel.textContent === 'Checking') {
-        setStatus('Click to Play', 'status-action-required');
+    // 5. ATTIVAZIONE PROGRAMMATICA
+    // Tenta di forzare il play() per superare le restrizioni sui browser mobili
+    video.play().catch(error => {
+      console.warn(`Autoplay bloccato dalle policy del browser o codec non supportato:`, error);
+      // Se l'autoplay viene bloccato ma il browser supporta il codec, chiede l'azione dell'utente
+      if (statusLabel.textContent === 'Checking' && video.readyState > 1) {
+        updateStatus('Click to Play', 'status-action-required');
       }
     });
   });
