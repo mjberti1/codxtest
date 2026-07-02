@@ -18,82 +18,56 @@
       </header>
 
       <section class="tests" aria-label="Codec test videos">
-        <!-- TEST A & B (Omitted for brevity) -->
-        
-        <!-- TEST C (Riscritto e Corretto) -->
-        <article class="test-card" data-video-card id="test-c">
-          <div class="card-head">
-            <div>
-              <p class="label">Test C</p>
-              <h2>AV1-HEVC Fallback</h2>
-            </div>
-            <span class="status" data-status>Checking</span>
-          </div>
+        <!-- TEST A & B: Gestiti dallo script esterno -->
+        <article class="test-card" data-video-card>
+          <div class="card-head"><div><p class="label">Test A</p><h2>MP4 / AV1</h2></div><span class="status" data-status>Checking</span></div>
+          <video data-codec-video class="video-frame" autoplay muted loop playsinline preload="auto">
+            <source src="https://github.io" type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"/>
+          </video>
+        </article>
+
+        <article class="test-card accent" data-video-card>
+          <div class="card-head"><div><p class="label">Test B</p><h2>MP4 / HEVC</h2></div><span class="status" data-status>Checking</span></div>
+          <video data-codec-video class="video-frame" autoplay muted loop playsinline preload="auto">
+            <source src="https://github.io" type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"/>
+          </video>
+        </article>
+
+        <!-- TEST C: Isolato e protetto -->
+        <article class="test-card" id="test-c">
+          <div class="card-head"><div><p class="label">Test C</p><h2>AV1-HEVC Fallback</h2></div><span class="status" id="status-c">Checking</span></div>
           <div class="video-container" id="container-c">
-            <video 
-              id="video-c" 
-              class="video-frame" 
-              autoplay 
-              muted 
-              loop 
-              playsinline
-              preload="auto"
-            >
-              <source 
-                src="https://github.io" 
-                type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"
-              />
-              <source 
-                src="https://github.io" 
-                type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"
-              />
+            <!-- NOTA: Niente data-codec-video qui -->
+            <video id="video-c" class="video-frame" autoplay muted loop playsinline preload="auto">
+              <source src="https://github.io" type="video/mp4; codecs=&quot;av01.0.05M.08&quot;"/>
+              <source src="https://github.io" type="video/mp4; codecs=&quot;hev1.1.6.L93.B0&quot;"/>
             </video>
-          </div>
-          <div class="details">
-            <span>Container: MP4</span>
-            <span>Muted autoplay</span>
-            <span>Loop enabled</span>
           </div>
         </article>
       </section>
-      <!-- ... notes ... -->
     </main>
 
+    <!-- Script esterno -->
     <script src="https://github.io"></script>
     
-    <!-- Logica JavaScript Corretta per il Test C -->
+    <!-- Logica Isolata Test C -->
     <script>
-      window.addEventListener('DOMContentLoaded', () => {
-        const video = document.getElementById('video-c');
-        const container = document.getElementById('container-c');
-        const statusElement = document.querySelector('#test-c [data-status]');
-        
-        const fallbackImg = document.createElement('img');
-        fallbackImg.src = 'https://github.io'; 
-        fallbackImg.alt = 'FISO - Fallback Static Image';
-        fallbackImg.className = 'video-frame'; 
-        
-        function switchToFallback(reason) {
-          if (video && video.parentNode) {
-            container.replaceChild(fallbackImg, video);
-            if (statusElement) statusElement.textContent = "Static Image (" + reason + ")";
+      (function() {
+        window.addEventListener('DOMContentLoaded', () => {
+          const video = document.getElementById('video-c'), container = document.getElementById('container-c'), status = document.getElementById('status-c');
+          if (!video || !container) return;
+          const fallbackImg = new Image();
+          fallbackImg.src = 'https://github.io';
+          fallbackImg.className = 'video-frame';
+          
+          function showFallback(msg) {
+            if (video.parentNode) { container.replaceChild(fallbackImg, video); status.textContent = "Static (" + msg + ")"; }
           }
-        }
-
-        if (video && video.canPlayType) {
-          const canPlayAV1 = video.canPlayType('video/mp4; codecs="av01.0.05M.08"');
-          const canPlayHEVC = video.canPlayType('video/mp4; codecs="hev1.1.6.L93.B0"');
-          if (canPlayAV1 === '' && canPlayHEVC === '') {
-            switchToFallback('Not Supported');
-          } else {
-            video.addEventListener('error', () => {
-              switchToFallback('Playback Error');
-            }, true);
-          }
-        } else {
-          switchToFallback('No Video Support');
-        }
-      });
+          video.addEventListener('playing', () => status.textContent = 'Playing');
+          video.addEventListener('error', () => showFallback('Error'), true);
+          video.play().catch(() => showFallback('Blocked'));
+        });
+      })();
     </script>
   </body>
 </html>
